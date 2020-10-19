@@ -33,7 +33,7 @@ class ViewController: UIViewController {
         scoreLabel.text = "\(score)"
         view.addSubview(scoreLabel)
         
-        btn.frame = CGRect(x: 20, y: 20 + (screenHeight / 10), width: 40, height: 40)
+        btn.frame = CGRect(x: Int.random(in: 20...screenWidth - 20 - 40), y: Int.random(in: 20 + (screenHeight / 10)...screenHeight - 20 - 40), width: 40, height: 40)
         btn.layer.cornerRadius = 20
         btn.backgroundColor = UIColor.brown
         btn.setTitle("Mole", for: .normal)
