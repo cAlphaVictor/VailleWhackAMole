@@ -58,7 +58,20 @@ class ViewController: UIViewController {
     }
     
     @objc func timerRunOut(_ sender:UIButton!) {
+        print("Timer has run out.")
+        
+        //Makes the mole disappear.
         btn.removeFromSuperview()
+        
+        //Decrements the score.
+        score -= 1
+        
+        //Randomizes a new location for the mole and makes it appear on the screen again.
+        randomizeMoleLocation()
+        view.addSubview(btn)
+        
+        //Restarts the five second timer.
+        resetTimer()
     }
     
     func randomizeMoleLocation() {
