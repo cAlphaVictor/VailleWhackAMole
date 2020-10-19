@@ -41,7 +41,7 @@ class ViewController: UIViewController {
         btn.addTarget(self, action: #selector(hitBtn(_:)), for: .touchUpInside)
         view.addSubview(btn)
         
-        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(timerRunOut(_:)), userInfo: nil, repeats: true)
+        startTimer()
     }
     
     @objc func hitBtn(_ sender:UIButton!) {
@@ -51,9 +51,26 @@ class ViewController: UIViewController {
         scoreLabel.text = "\(score)"
         
         btn.removeFromSuperview()
+        randomizeMoleLocation()
+        view.addSubview(btn)
+        
+        resetTimer()
     }
     
     @objc func timerRunOut(_ sender:UIButton!) {
         btn.removeFromSuperview()
+    }
+    
+    func randomizeMoleLocation() {
+        btn.frame = CGRect(x: Int.random(in: 20...screenWidth - 20 - 40), y: Int.random(in: 20 + (screenHeight / 10)...screenHeight - 20 - 40), width: 40, height: 40)
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(timerRunOut(_:)), userInfo: nil, repeats: true)
+    }
+    
+    func resetTimer() {
+        timer.invalidate()
+        startTimer()
     }
 }
