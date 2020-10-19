@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     var score = Int.init()
     var fieldLabel = UILabel()
     var btn = UIButton()
+    var timer = Timer()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +40,8 @@ class ViewController: UIViewController {
         btn.setTitle("Mole", for: .normal)
         btn.addTarget(self, action: #selector(hitBtn(_:)), for: .touchUpInside)
         view.addSubview(btn)
+        
+        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(timerRunOut(_:)), userInfo: nil, repeats: true)
     }
     
     @objc func hitBtn(_ sender:UIButton!) {
@@ -47,6 +50,10 @@ class ViewController: UIViewController {
         score += 1
         scoreLabel.text = "\(score)"
         
+        btn.removeFromSuperview()
+    }
+    
+    @objc func timerRunOut(_ sender:UIButton!) {
         btn.removeFromSuperview()
     }
 }
