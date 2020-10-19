@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var scoreLabel = UILabel()
     var score = Int.init()
     var fieldLabel = UILabel()
+    var btn = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,5 +32,16 @@ class ViewController: UIViewController {
         scoreLabel.backgroundColor = UIColor.blue
         scoreLabel.text = "\(score)"
         view.addSubview(scoreLabel)
+        
+        btn.frame = CGRect(x: 20, y: 20 + (screenHeight / 10), width: 40, height: 40)
+        btn.layer.cornerRadius = 20
+        btn.backgroundColor = UIColor.brown
+        btn.setTitle("Mole", for: .normal)
+        btn.addTarget(self, action: #selector(hitBtn(_:)), for: .touchUpInside)
+        view.addSubview(btn)
+    }
+    
+    @objc func hitBtn(_ sender:UIButton!) {
+        print("Button has been hit.")
     }
 }
