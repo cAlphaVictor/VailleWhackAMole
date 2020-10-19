@@ -46,5 +46,7 @@ class ViewController: UIViewController {
         
         score += 1
         scoreLabel.text = "\(score)"
+        
+        btn.removeFromSuperview()
     }
 }
