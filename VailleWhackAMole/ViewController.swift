@@ -43,5 +43,8 @@ class ViewController: UIViewController {
     
     @objc func hitBtn(_ sender:UIButton!) {
         print("Button has been hit.")
+        
+        score += 1
+        scoreLabel.text = "\(score)"
     }
 }
