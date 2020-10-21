@@ -17,6 +17,8 @@ class ViewController: UIViewController {
     var fieldLabel = UILabel()
     var btn = UIButton()
     var timer = Timer()
+    var winnerLabel = UILabel()
+    let scoreLimit = 10
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +33,8 @@ class ViewController: UIViewController {
         
         scoreLabel.frame = CGRect(x: 20, y: 20, width: screenWidth - 40, height: screenHeight / 10)
         scoreLabel.backgroundColor = UIColor.blue
-        scoreLabel.text = "\(score)"
+        scoreLabel.text = "Score: \(score)"
+        scoreLabel.textAlignment = NSTextAlignment.center
         view.addSubview(scoreLabel)
         
         btn.frame = CGRect(x: Int.random(in: 20...screenWidth - 20 - 40), y: Int.random(in: 20 + (screenHeight / 10)...screenHeight - 20 - 40), width: 40, height: 40)
@@ -47,14 +50,17 @@ class ViewController: UIViewController {
     @objc func hitBtn(_ sender:UIButton!) {
         print("Button has been hit.")
         
-        score += 1
-        scoreLabel.text = "\(score)"
-        
+        //Makes the mole disappear and then makes it reappear in a new randomized location.
         btn.removeFromSuperview()
         randomizeMoleLocation()
         view.addSubview(btn)
         
+        //Restarts or resets the five second timer.
         resetTimer()
+        
+        //Increments the score and sets the score label text to the score.
+        setScore(newScore: score + 1)
+        scoreLabel.text = "Score: \(score)"
     }
     
     @objc func timerRunOut(_ sender:UIButton!) {
@@ -64,7 +70,7 @@ class ViewController: UIViewController {
         btn.removeFromSuperview()
         
         //Decrements the score.
-        score -= 1
+        setScore(newScore: score - 1)
         
         //Randomizes a new location for the mole and makes it appear on the screen again.
         randomizeMoleLocation()
@@ -82,8 +88,36 @@ class ViewController: UIViewController {
         timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(timerRunOut(_:)), userInfo: nil, repeats: true)
     }
     
+    func stopTimer() {
+        timer.invalidate()
+    }
+    
     func resetTimer() {
         timer.invalidate()
         startTimer()
+    }
+    
+    func setScore(newScore: Int) {
+        score = newScore
+        
+        if score >= scoreLimit {
+            endGame()
+        }
+    }
+    
+    func endGame() {
+        print("You have won the game! Congrats!")
+        
+        //Do the rest of the end game code here.
+        winnerLabel.frame = CGRect(x: 20, y: ((screenHeight - 40) / 2) + 20, width: screenWidth - 40, height: 40)
+        winnerLabel.backgroundColor = UIColor.red
+        winnerLabel.text = "You have won the game! Congrats!"
+        winnerLabel.textAlignment = NSTextAlignment.center
+        view.addSubview(winnerLabel)
+        
+        scoreLabel.removeFromSuperview()
+        fieldLabel.removeFromSuperview()
+        btn.removeFromSuperview()
+        stopTimer()
     }
 }
