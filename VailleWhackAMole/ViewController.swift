@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     var btn = UIButton()
     var timer = Timer()
     var winnerLabel = UILabel()
+    var tauntingLabel = UILabel()
     let scoreLimit = 10
     
     override func viewDidLoad() {
@@ -33,6 +34,7 @@ class ViewController: UIViewController {
         
         scoreLabel.frame = CGRect(x: 20, y: 20, width: screenWidth - 40, height: screenHeight / 10)
         scoreLabel.backgroundColor = UIColor.blue
+        scoreLabel.textColor = UIColor.white
         scoreLabel.text = "Score: \(score)"
         scoreLabel.textAlignment = NSTextAlignment.center
         view.addSubview(scoreLabel)
@@ -43,6 +45,11 @@ class ViewController: UIViewController {
         btn.setTitle("Mole", for: .normal)
         btn.addTarget(self, action: #selector(hitBtn(_:)), for: .touchUpInside)
         view.addSubview(btn)
+        
+        tauntingLabel.frame = CGRect(x: 20, y: 20 + (screenHeight / 10), width: screenWidth, height: 20)
+        tauntingLabel.textAlignment = NSTextAlignment.center
+        tauntingLabel.textColor = UIColor.white
+        view.addSubview(tauntingLabel)
         
         startTimer()
     }
@@ -57,6 +64,9 @@ class ViewController: UIViewController {
         
         //Restarts or resets the five second timer.
         resetTimer()
+        
+        //Clears the taunting label text.
+        tauntingLabel.text = ""
         
         //Increments the score and sets the score label text to the score.
         setScore(newScore: score + 1)
@@ -78,6 +88,24 @@ class ViewController: UIViewController {
         
         //Restarts the five second timer.
         resetTimer()
+        
+        //Sets the text of the taunting label.
+        tauntingLabel.text = getTauntingLabelText(previousTaunt: tauntingLabel.text ?? "")
+    }
+    
+    func getTauntingLabelText(previousTaunt: String) -> String {
+        var taunts = [String]()
+        taunts.append("Wow! You really missed that?")
+        taunts.append("Are you even trying to hit the mole?")
+        taunts.append("Is that the best you've got?")
+        
+        for (index, text) in taunts.enumerated() {
+            if text == previousTaunt {
+                taunts.remove(at: index)
+            }
+        }
+        
+        return taunts[Int.random(in: 0..<taunts.count)]
     }
     
     func randomizeMoleLocation() {
