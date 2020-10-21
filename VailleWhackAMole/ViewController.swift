@@ -41,8 +41,9 @@ class ViewController: UIViewController {
         
         btn.frame = CGRect(x: Int.random(in: 20...screenWidth - 20 - 40), y: Int.random(in: 20 + (screenHeight / 10)...screenHeight - 20 - 40), width: 40, height: 40)
         btn.layer.cornerRadius = 20
-        btn.backgroundColor = UIColor.brown
-        btn.setTitle("Mole", for: .normal)
+        //btn.backgroundColor = UIColor.brown
+        btn.setImage(UIImage(named: "Mole"), for: .normal)
+        //btn.setTitle("Mole", for: .normal)
         btn.addTarget(self, action: #selector(hitBtn(_:)), for: .touchUpInside)
         view.addSubview(btn)
         
