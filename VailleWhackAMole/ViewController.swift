@@ -13,12 +13,13 @@ class ViewController: UIViewController {
     var screenWidth = 0
     var screenHeight = 0
     var scoreLabel = UILabel()
-    var score = Int.init()
+    var score = Double.init()
     var fieldLabel = UILabel()
     var btn = UIButton()
     var timer = Timer()
     var winnerLabel = UILabel()
     var tauntingLabel = UILabel()
+    var pointsForHit = 1.0
     let scoreLimit = 10
     
     override func viewDidLoad() {
@@ -70,8 +71,7 @@ class ViewController: UIViewController {
         tauntingLabel.text = ""
         
         //Increments the score and sets the score label text to the score.
-        setScore(newScore: score + 1)
-        scoreLabel.text = "Score: \(score)"
+        setScore(newScore: score + Double(pointsForHit))
     }
     
     @objc func timerRunOut(_ sender:UIButton!) {
@@ -80,12 +80,12 @@ class ViewController: UIViewController {
         //Makes the mole disappear.
         btn.removeFromSuperview()
         
-        //Decrements the score.
-        setScore(newScore: score - 1)
-        
         //Randomizes a new location for the mole and makes it appear on the screen again.
         randomizeMoleLocation()
         view.addSubview(btn)
+        
+        //Decrements the score.
+        setScore(newScore: score - 1.0)
         
         //Restarts the five second timer.
         resetTimer()
@@ -110,7 +110,9 @@ class ViewController: UIViewController {
     }
     
     func randomizeMoleLocation() {
-        btn.frame = CGRect(x: Int.random(in: 20...screenWidth - 20 - 40), y: Int.random(in: 20 + (screenHeight / 10)...screenHeight - 20 - 40), width: 40, height: 40)
+        let size = Int.random(in: 40...80)
+        pointsForHit = 80.0 / Double(size)
+        btn.frame = CGRect(x: Int.random(in: 20...screenWidth - 20 - size), y: Int.random(in: 20 + (screenHeight / 10)...screenHeight - 20 - size), width: size, height: size)
     }
     
     func startTimer() {
@@ -126,11 +128,14 @@ class ViewController: UIViewController {
         startTimer()
     }
     
-    func setScore(newScore: Int) {
+    func setScore(newScore: Double) {
         score = newScore
         
-        if score >= scoreLimit {
+        if Int(score) >= scoreLimit {
             endGame()
+        } else {
+            let labelScore = Double(Int(score * 100.0)) / 100.0
+            scoreLabel.text = "\(labelScore)"
         }
     }
     
