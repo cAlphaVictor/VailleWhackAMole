@@ -22,6 +22,8 @@ class ViewController: UIViewController {
     var pointsForHit = 1.0
     var timeModifier = Double.init()
     let scoreLimit = 10
+    let easyTargetUIColor = UIColor.green
+    let hardTargetUIColor = UIColor.red
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +33,7 @@ class ViewController: UIViewController {
         screenHeight = Int(screenBounds.height)
         
         fieldLabel.frame = CGRect(x: 20, y: 20, width: screenWidth - 40, height: screenHeight - 40)
-        fieldLabel.backgroundColor = UIColor(red: 0, green: 1, blue: 0, alpha: 1.0)
+        fieldLabel.backgroundColor = UIColor(red: (10.0 / 255.0), green: (145.0 / 255.0), blue: (0.0 / 255.0), alpha: 1.0)
         view.addSubview(fieldLabel)
         
         scoreLabel.frame = CGRect(x: 20, y: 20, width: screenWidth - 40, height: screenHeight / 10)
@@ -43,9 +45,8 @@ class ViewController: UIViewController {
         
         btn.frame = CGRect(x: Int.random(in: 20...screenWidth - 20 - 40), y: Int.random(in: 20 + (screenHeight / 10)...screenHeight - 20 - 40), width: 40, height: 40)
         btn.layer.cornerRadius = 20
-        //btn.backgroundColor = UIColor.brown
+        btn.backgroundColor = easyTargetUIColor
         btn.setImage(UIImage(named: "Mole"), for: .normal)
-        //btn.setTitle("Mole", for: .normal)
         btn.addTarget(self, action: #selector(hitBtn(_:)), for: .touchUpInside)
         view.addSubview(btn)
         
@@ -64,6 +65,9 @@ class ViewController: UIViewController {
         btn.removeFromSuperview()
         randomizeMoleLocation()
         view.addSubview(btn)
+        
+        //Changes the background color of the mole based on how many points it is worth.
+        determineMoleColor()
         
         //Clears the taunting label text.
         tauntingLabel.text = ""
@@ -84,6 +88,9 @@ class ViewController: UIViewController {
         //Randomizes a new location for the mole and makes it appear on the screen again.
         randomizeMoleLocation()
         view.addSubview(btn)
+        
+        //Changes the background color of the mole based on how many points it is worth.
+        determineMoleColor()
         
         //Decrements the score.
         setScore(newScore: score - 1.0)
@@ -114,6 +121,7 @@ class ViewController: UIViewController {
         let size = Int.random(in: 40...80)
         pointsForHit = 80.0 / Double(size)
         btn.frame = CGRect(x: Int.random(in: 20...screenWidth - 20 - size), y: Int.random(in: 20 + (screenHeight / 10)...screenHeight - 20 - size), width: size, height: size)
+        btn.layer.cornerRadius = CGFloat(Double(size) / 2.0)
     }
     
     func startTimer() {
@@ -156,5 +164,13 @@ class ViewController: UIViewController {
         fieldLabel.removeFromSuperview()
         btn.removeFromSuperview()
         stopTimer()
+    }
+    
+    func determineMoleColor() {
+        if pointsForHit * timeModifier >= (2.5) {
+            btn.backgroundColor = hardTargetUIColor
+        } else {
+            btn.backgroundColor = easyTargetUIColor
+        }
     }
 }
