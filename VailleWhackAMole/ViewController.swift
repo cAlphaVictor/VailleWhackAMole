@@ -20,6 +20,7 @@ class ViewController: UIViewController {
     var winnerLabel = UILabel()
     var tauntingLabel = UILabel()
     var pointsForHit = 1.0
+    var timeModifier = Double.init()
     let scoreLimit = 10
     
     override func viewDidLoad() {
@@ -64,14 +65,14 @@ class ViewController: UIViewController {
         randomizeMoleLocation()
         view.addSubview(btn)
         
-        //Restarts or resets the five second timer.
-        resetTimer()
-        
         //Clears the taunting label text.
         tauntingLabel.text = ""
         
         //Increments the score and sets the score label text to the score.
-        setScore(newScore: score + Double(pointsForHit))
+        setScore(newScore: score + Double(pointsForHit) * timeModifier)
+        
+        //Restarts or resets the five second timer.
+        resetTimer()
     }
     
     @objc func timerRunOut(_ sender:UIButton!) {
@@ -116,7 +117,9 @@ class ViewController: UIViewController {
     }
     
     func startTimer() {
-        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(timerRunOut(_:)), userInfo: nil, repeats: true)
+        let time = Double.random(in: 1...5)
+        timeModifier = 5 / time
+        timer = Timer.scheduledTimer(timeInterval: time, target: self, selector: #selector(timerRunOut(_:)), userInfo: nil, repeats: true)
     }
     
     func stopTimer() {
