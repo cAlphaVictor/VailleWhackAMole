@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     var fieldLabel = UILabel()
     var btn = UIButton()
     var timer = Timer()
+    var stopWatchTimer = Timer()
     var winnerLabel = UILabel()
     var tauntingLabel = UILabel()
     var pointsForHit = 1.0
@@ -24,6 +25,10 @@ class ViewController: UIViewController {
     let scoreLimit = 10
     let easyTargetUIColor = UIColor.green
     let hardTargetUIColor = UIColor.red
+    var stopWatch = Double.init()
+    var stopWatchLabel = UILabel()
+    var randomizedTime = Double.init()
+    let maxBonusForReaction = 1.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,6 +61,15 @@ class ViewController: UIViewController {
         view.addSubview(tauntingLabel)
         
         startTimer()
+        
+        stopWatchLabel.frame = CGRect(x: 20, y: screenHeight - 20 - (screenHeight / 10), width: screenWidth - 40, height: (screenHeight / 10))
+        stopWatchLabel.textColor = UIColor.white
+        stopWatchLabel.font = stopWatchLabel.font.withSize(30)
+        stopWatchLabel.text = "\(getRoundedStopWatchNum())"
+        stopWatchLabel.textAlignment = NSTextAlignment.center
+        view.addSubview(stopWatchLabel)
+        
+        startStopWatchTimer()
     }
     
     @objc func hitBtn(_ sender:UIButton!) {
@@ -73,10 +87,14 @@ class ViewController: UIViewController {
         tauntingLabel.text = ""
         
         //Increments the score and sets the score label text to the score.
-        setScore(newScore: score + Double(pointsForHit) * timeModifier)
+        let bonusForReaction: Double = (1.0 - (stopWatch / randomizedTime)) * maxBonusForReaction
+        setScore(newScore: score + Double(pointsForHit) * timeModifier * bonusForReaction)
         
         //Restarts or resets the five second timer.
         resetTimer()
+        
+        //Resets the stop watch time back to 0.
+        resetStopWatch()
     }
     
     @objc func timerRunOut(_ sender:UIButton!) {
@@ -92,11 +110,14 @@ class ViewController: UIViewController {
         //Changes the background color of the mole based on how many points it is worth.
         determineMoleColor()
         
-        //Decrements the score.
-        setScore(newScore: score - 1.0)
-        
         //Restarts the five second timer.
         resetTimer()
+        
+        //Resets the stop watch time back to 0.
+        resetStopWatch()
+        
+        //Decrements the score.
+        setScore(newScore: score - 1.0)
         
         //Sets the text of the taunting label.
         tauntingLabel.text = getTauntingLabelText(previousTaunt: tauntingLabel.text ?? "")
@@ -108,12 +129,14 @@ class ViewController: UIViewController {
         taunts.append("Are you even trying to hit the mole?")
         taunts.append("Is that the best you've got?")
         
+        //Removes the previous taunt from the array of taunts that could be possible used as the next taunt in order to avoid repetition.
         for (index, text) in taunts.enumerated() {
             if text == previousTaunt {
                 taunts.remove(at: index)
             }
         }
-        
+
+        //Returns a random taunt from the array of available taunts to return.
         return taunts[Int.random(in: 0..<taunts.count)]
     }
     
@@ -126,6 +149,7 @@ class ViewController: UIViewController {
     
     func startTimer() {
         let time = Double.random(in: 1...5)
+        randomizedTime = time
         timeModifier = 5 / time
         timer = Timer.scheduledTimer(timeInterval: time, target: self, selector: #selector(timerRunOut(_:)), userInfo: nil, repeats: true)
     }
@@ -135,8 +159,21 @@ class ViewController: UIViewController {
     }
     
     func resetTimer() {
-        timer.invalidate()
+        stopTimer()
         startTimer()
+    }
+    
+    func resetStopWatch() {
+        stopWatch = 0.0
+        stopWatchLabel.text = "\(getRoundedStopWatchNum())"
+    }
+    
+    func stopStopWatchTimer() {
+        stopWatchTimer.invalidate()
+    }
+    
+    func startStopWatchTimer() {
+        stopWatchTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(stopWatchTimerTick), userInfo: nil, repeats: true)
     }
     
     func setScore(newScore: Double) {
@@ -164,6 +201,8 @@ class ViewController: UIViewController {
         fieldLabel.removeFromSuperview()
         btn.removeFromSuperview()
         stopTimer()
+        stopWatchLabel.removeFromSuperview()
+        stopStopWatchTimer()
     }
     
     func determineMoleColor() {
@@ -172,5 +211,14 @@ class ViewController: UIViewController {
         } else {
             btn.backgroundColor = easyTargetUIColor
         }
+    }
+    
+    func getRoundedStopWatchNum() -> Double {
+        Double(Int(stopWatch * 100.0)) / 100.0
+    }
+    
+    @objc func stopWatchTimerTick() {
+        stopWatch += 0.01
+        stopWatchLabel.text = "\(getRoundedStopWatchNum())"
     }
 }
